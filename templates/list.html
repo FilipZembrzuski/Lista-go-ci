@@ -2,4 +2,21 @@
 
 {% block content %}
     <h1>Lista gości</h1>
+
+    <ul>
+        {% for g in guests %}
+            {% if g.u_group == 0 %}
+                <li style="color:{{g.color}}">{{g.name}}</li>
+                <ul>
+                    {% for gn in guests %}
+                        {% if gn.u_group != 0 %}
+                            {% if gn.u_group == g.id %}
+                                <li style="color:{{gn.color}}">{{gn.name}}</li>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}    
+                </ul>
+            {% endif %}
+        {% endfor %}
+    </ul>
 {% endblock  %}

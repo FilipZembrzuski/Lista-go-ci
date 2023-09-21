@@ -54,18 +54,26 @@ def select_ugroup():
 
 def select_guests():
     conn = sql.connect("lista_gości.db")
-    selectGuests = "Select name, group, 'u_group' From `guests`;"
+    selectGuests = "Select id, `name`, `group`, `u_group` From `guests`;"
+    selectColors = "Select color From `groups`"
     cursor = conn.execute(selectGuests)
+    cursor2 = conn.execute(selectColors)
     conn.commit()
     
+    colors = []
+    for c in cursor2:
+        colors.append(c[0])
     guests = []
-    for c in cursor:
+    for g in cursor:
         guest = {
-            'name':c[0],
-            'group':c[1],
-            'ugroup':c[2]
+            'id':g[0],
+            'name':g[1],
+            'group':g[2],
+            'u_group':g[3],
+            'color':colors[g[2]-1]
         }
-        guests.append[guest]
+        guests.append(guest)
+        
     conn.close()
     return(guests)
 
@@ -74,7 +82,7 @@ def select_guests():
 @app.route("/show_list")
 def guests_list():
     guests = select_guests()
-    return render_template("list.html")#, guests = guests)
+    return render_template("list.html", guests = guests)
 
 @app.route("/new_guest", methods = ['POST'])
 def new_guest():
