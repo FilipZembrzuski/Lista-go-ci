@@ -1,0 +1,36 @@
+{% extends "index.html" %}
+
+{% block content %}
+    <div id="new_guest">
+        <h2>Dodaj gościa</h2>
+        <form action="new_guest" method="post">
+            nick:<input type="text" name="pname" id=""><br>
+            grupa:<select name="pgroup" id="">
+                {% for i in groups %}
+                    <option value="{{i.id}}">{{i.name}}</option>
+                {% endfor %}
+            </select><br>
+            podgupa: <select name="pugroup" id="">
+                <option value="0">none</option>
+                {% for i in ugroups %}
+                    <option value="{{i.id}}">{{i.name}}</option>
+                {% endfor %}
+            </select><br>
+            <input type="submit" value="prześlij">
+        </form>
+    </div>
+    <div id="new_group">
+        <form action="new_group" method="post">
+            nazwa grupy: <input type="text" name="gname"><br>
+            kolor: <input type="color" name="gcolor"><br>
+            <input type="submit" value="Dodaj grupę">
+        </form>
+        <br>
+
+        <ul>
+            {% for i in groups %}
+                <li style='color:{{i.color}}'>{{i.name}}</li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock  %}

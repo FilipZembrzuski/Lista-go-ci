@@ -9,12 +9,12 @@ html, body{
     padding-bottom: 20px;
 }
 
-ul{
+#menu_block>ul{
     padding: 0;
     margin: 0;
 }
 
-li{
+#menu_block>ul>li{
     display: inline;
     margin: 20px;
     padding: 5px;

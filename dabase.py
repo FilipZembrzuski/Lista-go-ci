@@ -1,25 +1,19 @@
 import sqlite3 as sql
 import os
 
-db_Path = "lista_gości.db"
+dbPath = "lista_gości.db"
 
-if os.path.exists(db_Path) != True:
+if os.path.exists(dbPath) != True:
     print("tworzę nową baze")
-    open(db_Path, "x")
-    conn = sql.connect(db_Path)
-    conn.execute("CREATE TABLE `grupy` (`id` INT NOT NULL, `name` TEXT, PRIMARY KEY (`id`))")
-    conn.execute("CREATE TABLE `goście` (`id` INT NOT NULL, `name` TEXT NOT NULL, `grupa` INT NOT NULL, `pod_grupa` INT NOT NULL, PRIMARY KEY (`id`))")
+    f = open(dbPath, "x")
+    f.close()
+    conn = sql.connect(dbPath)
+    conn.execute("""CREATE TABLE `groups` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT, 'color' TEXT)""")
+    conn.execute("""CREATE TABLE `guests` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT NOT NULL, `group` INT NOT NULL, `u_group` INT NOT NULL)""")
+    conn.execute("""Insert Into 'groups' ('name', 'color') Values ('rodzina','#ff00c9')""")
+    conn.execute("""Insert Into 'groups' ('name', 'color') Values ('organizator','#ffffff')""")
+    conn.commit()
 else:
-    conn = sql.connect(db_Path)
+    conn = sql.connect(dbPath)
 
-def add_group(name):
-    text = f"INSERT INTO `grupy`(`name`) VALUES ('{name}')"
-    conn.execute(text)
-    
-def add_guest(name, group, ugroup):
-    text = f"INSERT INTO `goście`(`name`,'grupa','podgrupa') VALUES ('{name}','{group}','{ugroup}')"
-    conn.execute(text)
-
-
-conn.commit()
 conn.close()
