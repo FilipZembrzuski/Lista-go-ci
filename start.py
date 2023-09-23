@@ -54,7 +54,7 @@ def select_ugroup():
 
 def select_guests():
     conn = sql.connect("lista_gości.db")
-    selectGuests = "Select id, `name`, `group`, `u_group` From `guests`;"
+    selectGuests = "Select id, `name`, `group`, `u_group` From `guests` Order by `group` asc;"
     selectColors = "Select color From `groups`"
     cursor = conn.execute(selectGuests)
     cursor2 = conn.execute(selectColors)
@@ -77,12 +77,35 @@ def select_guests():
     conn.close()
     return(guests)
 
+def del_group(id):
+    conn = sql.connect("lista_gości.db")
+    deleteGroup = f"DELETE FROM `groups` WHERE `id` = {id};"
+    conn.execute(deleteGroup)
+    conn.commit()
+    conn.close()
+
+def del_guest(id):
+    conn = sql.connect("lista_gości.db")
+    deleteGuest = f"DELETE FROM `guests` WHERE `id` = {id};"
+    deleteUguest = f"DELETE FROM `guests` WHERE `u_group` = {id};"
+    conn.execute(deleteGuest)
+    conn.execute(deleteUguest)
+    conn.commit()
+    conn.close()
+
+def edit_groups(id, color):
+    conn = sql.connect("lista_gości.db")
+    updateGroup = f"UPDATE `groups` SET color= '{color}' WHERE `id` = {id}"
+    conn.execute(updateGroup)
+    conn.commit()
+    conn.close()
+    
 @app.route("/home")
 @app.route("/")
 @app.route("/show_list")
 def guests_list():
     guests = select_guests()
-    return render_template("list.html", guests = guests)
+    return render_template("list.html", guests = guests, count = len(guests))
 
 @app.route("/new_guest", methods = ['POST'])
 def new_guest():
@@ -96,7 +119,6 @@ def new_guest():
         return redirect("/add_guest", code=302)
     
 @app.route("/new_group", methods = ['POST'])
-
 def new_group():
     if request.method == "POST":
         name = request.form['gname']
@@ -109,6 +131,29 @@ def add_guests():
     groups = select_group()
     ugroups = select_ugroup()
     return render_template("add_guest.html", groups = groups, ugroups = ugroups)
+
+@app.route("/delete_group", methods = ['POST'])
+def delete_group():
+    if request.method == "POST":
+        id = request.form['gid']
+        del_group(id)
+        return redirect("/add_guest", code=302)
+    
+@app.route("/delete_guest", methods = ['POST'])
+def delete_guest():
+    if request.method == "POST":
+        id = request.form['gid']
+        del_guest(id)
+        return redirect("/", code=302)
+    
+@app.route("/edit_group", methods = ['POST'])
+def update_group():
+    if request.method == "POST":
+        id = request.form['gid']
+        color = request.form['ucolor']
+        edit_groups(id, color)
+        return redirect("/add_guest", code=302)
+    
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1',port=420,debug=True)

@@ -1,9 +1,11 @@
 {% extends "index.html" %}
 
 {% block content %}
+    <h2>Dodaj gościa</h2>
+    <br>
     <div id="new_guest">
-        <h2>Dodaj gościa</h2>
-        <form action="new_guest" method="post">
+        
+        <form action="new_guest" method="post" class="add">
             nick:<input type="text" name="pname" id=""><br>
             grupa:<select name="pgroup" id="">
                 {% for i in groups %}
@@ -20,16 +22,27 @@
         </form>
     </div>
     <div id="new_group">
-        <form action="new_group" method="post">
+        <form action="new_group" method="post" class="add">
             nazwa grupy: <input type="text" name="gname"><br>
             kolor: <input type="color" name="gcolor"><br>
             <input type="submit" value="Dodaj grupę">
         </form>
         <br>
 
-        <ul>
+        <ul id="grupy">
             {% for i in groups %}
-                <li style='color:{{i.color}}'>{{i.name}}</li>
+                <li style='color:{{i.color}}'>{{i.name}}
+                    <form action="delete_group" method="post" class="delete_form">
+                        <input type="hidden" value="{{i.id}}" name="gid">
+                        <input type="submit" value="X" class="delete_button">
+                    </form>
+                    <br>
+                    <form action="edit_group" method="post" class="delete_form">
+                        <input type="hidden" value="{{i.id}}" name="gid">
+                        <input type="color" name="ucolor" value="{{i.color}}" class="update_color">
+                        <input type="submit" value="Edytuj" class="update_button">
+                    </form>
+                </li>
             {% endfor %}
         </ul>
     </div>

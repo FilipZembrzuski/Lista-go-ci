@@ -10,8 +10,6 @@ if os.path.exists(dbPath) != True:
     conn = sql.connect(dbPath)
     conn.execute("""CREATE TABLE `groups` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT, 'color' TEXT)""")
     conn.execute("""CREATE TABLE `guests` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT NOT NULL, `group` INT NOT NULL, `u_group` INT NOT NULL)""")
-    conn.execute("""Insert Into 'groups' ('name', 'color') Values ('rodzina','#ff00c9')""")
-    conn.execute("""Insert Into 'groups' ('name', 'color') Values ('organizator','#ffffff')""")
     conn.commit()
 else:
     conn = sql.connect(dbPath)
