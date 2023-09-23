@@ -6,9 +6,21 @@
     <ul id="lista">
         {% for g in guests %}
             {% if g.u_group == 0 %}
-                <li style="color:{{g.color}}">{{g.name}}
+                <li style="color:{{g.color}}">
+                    {% if g.status == 1%}
+                        {{g.name}}
+                    {% else %}
+                        <div class="disctive">{{g.name}}</div>
+                    {% endif %}
+                    {% if g.status == 0 %}
+                        <form action="reload_guest" method="post" class="delete_form">
+                            <input type="hidden" value="{{g.id}}" name="gid">
+                                <input type="submit" value="&#x21bb;" class="delete_button">
+                        </form>
+                    {% endif%}
                     <form action="delete_guest" method="post" class="delete_form">
                         <input type="hidden" value="{{g.id}}" name="gid">
+                        <input type="hidden" value="{{g.status}}" name="stat">
                         <input type="submit" value="X" class="delete_button">
                     </form>
                 </li>
@@ -16,9 +28,22 @@
                     {% for gn in guests %}
                         {% if gn.u_group != 0 %}
                             {% if gn.u_group == g.id %}
-                                <li style="color:{{gn.color}}">{{gn.name}}
+                                <li style="color:{{gn.color}};">
+                                {% if gn.status == 1%}
+                                    {{gn.name}}
+                                {% else %}
+                                    <div class="disctive">{{gn.name}}</div>
+                                {% endif %}
+                                    
+                                    {% if gn.status == 0 %}
+                                        <form action="reload_guest" method="post" class="delete_form">
+                                            <input type="hidden" value="{{gn.id}}" name="gid">
+                                                <input type="submit" value="&#x21bb;" class="delete_button">
+                                        </form>
+                                    {% endif%}
                                     <form action="delete_guest" method="post" class="delete_form">
                                         <input type="hidden" value="{{gn.id}}" name="gid">
+                                        <input type="hidden" value="{{gn.status}}" name="stat">
                                         <input type="submit" value="X" class="delete_button">
                                     </form>
                                 </li> 

@@ -112,6 +112,11 @@ ul#lista > li{
     margin-right: 15px;
 }
 
+.disctive{
+    text-decoration:line-through;
+    display: inline;
+}
+
 #menu_block>ul>li:hover{
     border-color: #fefefe;
 }

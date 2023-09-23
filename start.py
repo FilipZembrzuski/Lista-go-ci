@@ -54,7 +54,7 @@ def select_ugroup():
 
 def select_guests():
     conn = sql.connect("lista_gości.db")
-    selectGuests = "Select id, `name`, `group`, `u_group` From `guests` Order by `group` asc;"
+    selectGuests = "Select id, `name`, `group`, `u_group`, `active` From `guests` Order by `group` asc;"
     selectColors = "Select color From `groups`"
     cursor = conn.execute(selectGuests)
     cursor2 = conn.execute(selectColors)
@@ -70,6 +70,7 @@ def select_guests():
             'name':g[1],
             'group':g[2],
             'u_group':g[3],
+            'status':g[4],
             'color':colors[g[2]-1]
         }
         guests.append(guest)
@@ -77,6 +78,20 @@ def select_guests():
     conn.close()
     return(guests)
 
+def disctive_guest(id):
+    conn = sql.connect("lista_gości.db")
+    dezactiveGroup = f"UPDATE `guests` SET active = FALSE WHERE `id` = {id}"
+    conn.execute(dezactiveGroup)
+    conn.commit()
+    conn.close()
+    
+def reactive_guest(id):
+    conn = sql.connect("lista_gości.db")
+    dezactiveGroup = f"UPDATE `guests` SET active = TRUE WHERE `id` = {id}"
+    conn.execute(dezactiveGroup)
+    conn.commit()
+    conn.close()
+    
 def del_group(id):
     conn = sql.connect("lista_gości.db")
     deleteGroup = f"DELETE FROM `groups` WHERE `id` = {id};"
@@ -95,7 +110,7 @@ def del_guest(id):
 
 def edit_groups(id, color):
     conn = sql.connect("lista_gości.db")
-    updateGroup = f"UPDATE `groups` SET color= '{color}' WHERE `id` = {id}"
+    updateGroup = f"UPDATE `groups` SET color='{color}' WHERE `id` = {id}"
     conn.execute(updateGroup)
     conn.commit()
     conn.close()
@@ -143,7 +158,18 @@ def delete_group():
 def delete_guest():
     if request.method == "POST":
         id = request.form['gid']
-        del_guest(id)
+        stat = request.form['stat']
+        if stat == "1":
+            disctive_guest(id)
+        else:
+            del_guest(id)
+        return redirect("/", code=302)
+    
+@app.route("/reload_guest", methods = ['POST'])
+def reload_guest():
+    if request.method == "POST":
+        id = request.form['gid']
+        reactive_guest(id)
         return redirect("/", code=302)
     
 @app.route("/edit_group", methods = ['POST'])
