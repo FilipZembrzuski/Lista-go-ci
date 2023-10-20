@@ -1,0 +1,56 @@
+#add_list{
+    display: inline;
+    float: left;
+    width: 45%;
+    border: 1px solid #5a5a5a;
+    border-radius: 10px;
+    margin-left: 3.3%;
+}
+
+#add_list>form{
+    margin: auto;
+    margin-top: 5px;
+    padding: 10px;
+    text-align: center;
+}
+
+#add_list>form>input{
+    margin: 3px;
+}
+
+input[type=submit], input[type=reset]{
+    padding: 7px;
+    border: 1px solid #5a5a5a;
+    border-radius: 20px;
+    background-color: #00000000;
+    color: #acacac;
+}
+
+/*------------------------------------------------------------*/
+
+#lists{
+    display: inline;
+    float: right;
+    width: 45%;
+    border: 1px solid #5a5a5a;
+    border-radius: 10px;
+    background-color: #1a1a1a;
+    margin-right: 3.3%;
+    text-align: center;
+}
+
+.list{
+    border: 1px solid #5a5a5a;
+    border-radius: 10px;
+    width: fit-content;
+    padding: 10px;
+    margin: 5px;
+    margin-right:1.5px;
+    margin-left:1.5px;
+    display: inline-block;
+    max-width: 85%;
+    word-wrap: break-word;
+}
+.list:hover{
+    border-color: white;
+}

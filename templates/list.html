@@ -1,49 +1,49 @@
 {% extends "index.html" %}
 
 {% block content %}
-    <h1>Lista gości</h1>
-    <h5>łączna liczba osób: {{count}}</h5>
+    <h1>Lista elementów</h1>
+    <h5>łączna liczba elementów: {{count}}</h5>
     <ul id="lista">
-        {% for g in guests %}
-            {% if g.u_group == 0 %}
-                <li style="color:{{g.color}}">
-                    {% if g.status == 1%}
-                        {{g.name}}
+        {% for e in el %}
+            {% if e.u_group == 0 %}
+                <li style="color:{{e.color}}">
+                    {% if e.status == 1%}
+                        {{e.name}}
                     {% else %}
-                        <div class="disctive">{{g.name}}</div>
+                        <div class="disctive">{{e.name}}</div>
                     {% endif %}
-                    {% if g.status == 0 %}
-                        <form action="reload_guest" method="post" class="delete_form">
-                            <input type="hidden" value="{{g.id}}" name="gid">
-                                <input type="submit" value="&#x21bb;" class="delete_button">
+                    {% if e.status == 0 %}
+                        <form action="reload_element" method="post" class="delete_form">
+                            <input type="hidden" value="{{e.id}}" name="eid">
+                            <input type="submit" value="&#x21bb;" class="delete_button">
                         </form>
                     {% endif%}
-                    <form action="delete_guest" method="post" class="delete_form">
-                        <input type="hidden" value="{{g.id}}" name="gid">
-                        <input type="hidden" value="{{g.status}}" name="stat">
+                    <form action="delete_element" method="post" class="delete_form">
+                        <input type="hidden" value="{{e.id}}" name="eid">
+                        <input type="hidden" value="{{e.status}}" name="stat">
                         <input type="submit" value="X" class="delete_button">
                     </form>
                 </li>
                 <ul>
-                    {% for gn in guests %}
-                        {% if gn.u_group != 0 %}
-                            {% if gn.u_group == g.id %}
-                                <li style="color:{{gn.color}};">
-                                {% if gn.status == 1%}
-                                    {{gn.name}}
+                    {% for en in el %}
+                        {% if en.u_group != 0 %}
+                            {% if en.u_group == e.id %}
+                                <li style="color:{{en.color}};">
+                                {% if en.status == 1%}
+                                    {{en.name}}
                                 {% else %}
-                                    <div class="disctive">{{gn.name}}</div>
+                                    <div class="disctive">{{en.name}}</div>
                                 {% endif %}
                                     
-                                    {% if gn.status == 0 %}
-                                        <form action="reload_guest" method="post" class="delete_form">
-                                            <input type="hidden" value="{{gn.id}}" name="gid">
+                                    {% if en.status == 0 %}
+                                        <form action="reload_element" method="post" class="delete_form">
+                                            <input type="hidden" value="{{en.id}}" name="eid">
                                                 <input type="submit" value="&#x21bb;" class="delete_button">
                                         </form>
                                     {% endif%}
-                                    <form action="delete_guest" method="post" class="delete_form">
-                                        <input type="hidden" value="{{gn.id}}" name="gid">
-                                        <input type="hidden" value="{{gn.status}}" name="stat">
+                                    <form action="delete_element" method="post" class="delete_form">
+                                        <input type="hidden" value="{{en.id}}" name="eid">
+                                        <input type="hidden" value="{{en.status}}" name="stat">
                                         <input type="submit" value="X" class="delete_button">
                                     </form>
                                 </li> 

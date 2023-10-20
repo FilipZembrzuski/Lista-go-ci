@@ -5,14 +5,14 @@
     <br>
     <div id="new_guest">
         
-        <form action="new_guest" method="post" class="add">
-            nick:<input type="text" name="pname" id=""><br>
-            grupa:<select name="pgroup" id="">
+        <form action="new_element" method="post" class="add">
+            nazwa:<input type="text" name="ename" id=""><br>
+            grupa:<select name="egroup" id="">
                 {% for i in groups %}
                     <option value="{{i.id}}">{{i.name}}</option>
                 {% endfor %}
             </select><br>
-            podgupa: <select name="pugroup" id="">
+            podgupa: <select name="eugroup" id="">
                 <option value="0">none</option>
                 {% for i in ugroups %}
                     <option value="{{i.id}}">{{i.name}}</option>

@@ -1,0 +1,41 @@
+{% extends "index.html" %}
+
+{% block add_style %}
+    <link rel="stylesheet" href="static/style2.css">
+{% endblock %}
+
+{% block content %}
+
+    <h1>Dodaj listę</h1>
+
+    <div id="add_list">
+        <form action="new_list" method="post">
+            Nazwa: <input type="text" name="name" required><br>
+            <input type="submit" value="dodaj">
+            <input type="reset" value="reset">
+        </form>
+    </div>
+
+    <div id="lists">
+        {% for l in lists %}
+            <div class="list">
+                {{l.name}}
+                {% if l.status == 1 %}
+                    <form action="drop_list" method="post" class="delete_form">
+                        <input type="hidden" value="{{l.id}}" name="lid">
+                        <input type="hidden" value="{{l.name}}" name="name">
+                        <input type="hidden" value="{{l.status}}" name="stat">
+                        <input type="submit" value="&#x21bb;" class="delete_button">
+                    </form>
+                {% endif%}
+                    <form action="drop_list" method="post" class="delete_form">
+                        <input type="hidden" value="{{l.id}}" name="lid">
+                        <input type="hidden" value="{{l.name}}" name="name">
+                        <input type="hidden" value="{{l.status}}" name="stat">
+                        <input type="submit" value="X" class="delete_button">
+                    </form>
+            </div>
+        {% endfor %}
+    </div>
+
+{% endblock %}
