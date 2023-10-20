@@ -1,6 +1,20 @@
 {% extends "index.html" %}
 
+{% block add_style %}
+    <link rel="stylesheet" href="static/listy2.css">
+{% endblock %}
+
 {% block content %}
+    <div id="listy">
+        {% for l in lists %}
+            <div class="list">
+                <form action="show_list" method="post">
+                    <input type="hidden" name="name" value="{{l.name}}">
+                    <input type="submit" value="{{l.name}}">
+                </form>
+            </div>
+        {% endfor %}
+    </div>
     <h1>Lista elementów</h1>
     <h5>łączna liczba elementów: {{count}}</h5>
     <ul id="lista">
@@ -21,6 +35,7 @@
                     <form action="delete_element" method="post" class="delete_form">
                         <input type="hidden" value="{{e.id}}" name="eid">
                         <input type="hidden" value="{{e.status}}" name="stat">
+                        <input type="hidden" value="{{nazwa}}" name="list">
                         <input type="submit" value="X" class="delete_button">
                     </form>
                 </li>

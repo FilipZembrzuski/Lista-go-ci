@@ -1,11 +1,26 @@
 {% extends "index.html" %}
 
+{% block add_style %}
+    <link rel="stylesheet" href="static/listy2.css">
+{% endblock %}
+
 {% block content %}
-    <h2>Dodaj gościa</h2>
+    <div id="listy">
+        {% for l in lists %}
+            <div class="list">
+                <form action="add_element" method="post">
+                    <input type="hidden" name="name" value="{{l.name}}">
+                    <input type="submit" value="{{l.name}}">
+                </form>
+            </div>
+        {% endfor %}
+    </div>
+    <h2>Dodaj element</h2>
     <br>
     <div id="new_guest">
         
         <form action="new_element" method="post" class="add">
+            <input type="hidden" name="name" value="{{nazwa}}">
             nazwa:<input type="text" name="ename" id=""><br>
             grupa:<select name="egroup" id="">
                 {% for i in groups %}
@@ -25,6 +40,7 @@
         <form action="new_group" method="post" class="add">
             nazwa grupy: <input type="text" name="gname"><br>
             kolor: <input type="color" name="gcolor"><br>
+            <input type="hidden" value="{{id}}" name="lid">
             <input type="submit" value="Dodaj grupę">
         </form>
         <br>

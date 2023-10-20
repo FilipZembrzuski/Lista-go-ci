@@ -1,0 +1,27 @@
+#listy{
+    width:100%;
+    text-align: center;
+    cursor:auto;
+    padding-top: 10px;
+}
+
+.list{
+    display: inline-block;
+    height: fit-content;
+    margin: 5px;
+}
+
+.list>form>input[type=submit]{
+    background-color: #00000000;
+    color: #acacac;
+    border: 1px solid #5a5a5a;
+    border-radius: 10px;
+    padding: 5px;
+    word-wrap: break-word;
+    font-size: 17px;
+}
+
+.list>form>input[type=submit]:hover{
+    border-color: white;
+}
+

@@ -4,22 +4,22 @@ import sqlite3 as sql
 
 app = Flask(__name__)
     
-def add_group(name, color):
+def add_group(name, color, tid):
     conn = sql.connect("lista_gości.db")
-    conn.execute(f"""Insert Into 'groups' ('name', 'color') VALUES ('{name}', '{color}')""")
+    conn.execute(f"""Insert Into 'groups' ('name', 'color', 'table_id') VALUES ('{name}', '{color}', {tid})""")
     conn.commit()
     conn.close()
     
-def add_element(name, group, ugroup):
+def add_element(lista, name, group, ugroup):
     conn = sql.connect("lista_gości.db")
-    addElement = f"INSERT INTO `guests`(`name`,'group','u_group') VALUES ('{name}','{group}','{ugroup}')"
+    addElement = f"INSERT INTO `{lista}`(`name`,'group','u_group') VALUES ('{name}','{group}','{ugroup}')"
     conn.execute(addElement)
     conn.commit()
     conn.close()
     
-def select_group():
+def select_group(id):
     conn = sql.connect("lista_gości.db")
-    selectGroups = "Select id, name, color From `groups`"
+    selectGroups = f"Select id, name, color From `groups` Where `table_id` = {id}"
     cursor = conn.execute(selectGroups)
     conn.commit()
     
@@ -35,9 +35,9 @@ def select_group():
     conn.close()
     return(groups)
 
-def select_ugroup():
+def select_ugroup(lista):
     conn = sql.connect("lista_gości.db")
-    select_ugroups = "Select id, name From `guests` Where u_group = 0 "
+    select_ugroups = f"Select id, name From `{lista}` Where u_group = 0 "
     cursor = conn.execute(select_ugroups)
     conn.commit()
     
@@ -52,9 +52,9 @@ def select_ugroup():
     conn.close()
     return(ugroups)
 
-def select_elements():
+def select_elements(nazwa):
     conn = sql.connect("lista_gości.db")
-    selectElements = "Select id, `name`, `group`, `u_group`, `active` From `guests` Order by `group` asc;"
+    selectElements = f"Select id, `name`, `group`, `u_group`, `active` From `{nazwa}` Order by `group` asc;"
     selectColors = "Select color From `groups`"
     cursor = conn.execute(selectElements)
     cursor2 = conn.execute(selectColors)
@@ -99,9 +99,9 @@ def del_group(id):
     conn.commit()
     conn.close()
 
-def del_element(id):
+def del_element(id, list):
     conn = sql.connect("lista_gości.db")
-    deleteList = f"DELETE FROM `lists` WHERE `id` = {id};"
+    deleteList = f"DELETE FROM `{list}` WHERE `id` = {id};"
     conn.execute(deleteList)
     conn.commit()
     conn.close()
@@ -156,20 +156,56 @@ def edit_list(id, name):
     conn.commit()
     conn.close()
     
-@app.route("/home")
-@app.route("/")
-@app.route("/show_list")
+@app.route("/home", methods = ['GET'])
+@app.route("/", methods = ['GET'])
+@app.route("/show_list", methods = ['POST', 'GET'])
 def show_list():
-    elements = select_elements()
-    return render_template("list.html", el = elements, count = len(elements))
+    lists = select_list()
+    if request.method == "GET":
+        for l in lists:
+            if l["id"] > 0:
+                nazwa = l["name"]
+                break
+            else: 
+                nazwa = "none"
+    elif request.method == "POST":
+        nazwa = request.form["name"]
+    elements = select_elements(nazwa)
+    return render_template("list.html", lists = lists, el = elements, count = len(elements), nazwa = nazwa)
+
+@app.route("/add_element", methods = ['POST', 'GET'])
+def add_elements():
+    lists = select_list()
+    if request.method == "GET":
+        for l in lists:
+            if l["id"] > 0:
+                nazwa = l["name"]
+                id = l["id"]
+                break
+            else: 
+                nazwa = "none"
+                id = 0
+    elif request.method == "POST":
+        nazwa = request.form["name"]
+        for l in lists:
+            if l["name"] == nazwa:
+                id = l["id"]
+                break
+            else: 
+                id = 0
+        
+    groups = select_group(id)
+    ugroups = select_ugroup(nazwa)
+    return render_template("add_element.html", lists = lists, groups = groups, ugroups = ugroups, nazwa = nazwa, id = id)
 
 @app.route("/new_element", methods = ['POST'])
 def new_element():
     if request.method == "POST":
+        lista = request.form["name"]
         name = request.form['ename']
         group = request.form['egroup']
         ugroup = request.form['eugroup']
-        add_element(name, group, ugroup)
+        add_element(lista, name, group, ugroup)
         return redirect("/add_element", code=302)
     else:
         return redirect("/add_element", code=302)
@@ -179,14 +215,9 @@ def new_group():
     if request.method == "POST":
         name = request.form['gname']
         color = request.form['gcolor']
-        add_group(name, color)
+        lid = request.form["lid"]
+        add_group(name, color, lid)
     return redirect("/add_element", code=302)
-
-@app.route("/add_element")
-def add_elements():
-    groups = select_group()
-    ugroups = select_ugroup()
-    return render_template("add_element.html", groups = groups, ugroups = ugroups)
 
 @app.route("/delete_group", methods = ['POST'])
 def delete_group():
@@ -200,10 +231,11 @@ def delete_element():
     if request.method == "POST":
         id = request.form['eid']
         stat = request.form['stat']
+        lista = request.form['list']
         if stat == "1":
             disctive_element(id)
         else:
-            del_element(id)
+            del_element(id, lista)
         return redirect("/", code=302)
     
 @app.route("/reload_element", methods = ['POST'])
