@@ -10,6 +10,7 @@
             <div class="list">
                 <form action="show_list" method="post">
                     <input type="hidden" name="name" value="{{l.name}}">
+                    <input type="hidden" name="id" value="{{l.id}}">
                     <input type="submit" value="{{l.name}}">
                 </form>
             </div>
@@ -54,11 +55,13 @@
                                         <form action="reload_element" method="post" class="delete_form">
                                             <input type="hidden" value="{{en.id}}" name="eid">
                                                 <input type="submit" value="&#x21bb;" class="delete_button">
+                                                <input type="hidden" value="{{nazwa}}" name="list">
                                         </form>
                                     {% endif%}
                                     <form action="delete_element" method="post" class="delete_form">
                                         <input type="hidden" value="{{en.id}}" name="eid">
                                         <input type="hidden" value="{{en.status}}" name="stat">
+                                        <input type="hidden" value="{{nazwa}}" name="list">
                                         <input type="submit" value="X" class="delete_button">
                                     </form>
                                 </li> 

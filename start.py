@@ -12,7 +12,7 @@ def add_group(name, color, tid):
     
 def add_element(lista, name, group, ugroup):
     conn = sql.connect("lista_gości.db")
-    addElement = f"INSERT INTO `{lista}`(`name`,'group','u_group') VALUES ('{name}','{group}','{ugroup}')"
+    addElement = f"INSERT INTO `{lista}`(`name`,'group','u_group','active') VALUES ('{name}','{group}','{ugroup}',True)"
     conn.execute(addElement)
     conn.commit()
     conn.close()
@@ -52,17 +52,18 @@ def select_ugroup(lista):
     conn.close()
     return(ugroups)
 
-def select_elements(nazwa):
+def select_elements(nazwa, id):
     conn = sql.connect("lista_gości.db")
     selectElements = f"Select id, `name`, `group`, `u_group`, `active` From `{nazwa}` Order by `group` asc;"
-    selectColors = "Select color From `groups`"
+    selectColors = f"Select id, color From `groups` where `table_id` = {id}"
     cursor = conn.execute(selectElements)
     cursor2 = conn.execute(selectColors)
     conn.commit()
     
-    colors = []
+    colors = {}
     for c in cursor2:
-        colors.append(c[0])
+        colors[str(c[0])] = str(c[1])
+        print(str(c[0]) + " : " + c[1])
     elements = []
     for g in cursor:
         element = {
@@ -71,10 +72,10 @@ def select_elements(nazwa):
             'group':g[2],
             'u_group':g[3],
             'status':g[4],
-            'color':colors[g[2]-1]
+            'color':colors[str(g[2])]
         }
         elements.append(element)
-        
+    
     conn.close()
     return(elements)
 
@@ -85,9 +86,9 @@ def disctive_element(id):
     conn.commit()
     conn.close()
     
-def reactive_element(id):
+def reactive_element(id, lista):
     conn = sql.connect("lista_gości.db")
-    dezactiveGroup = f"UPDATE `guests` SET active = TRUE WHERE `id` = {id}"
+    dezactiveGroup = f"UPDATE `{lista}` SET active = TRUE WHERE `id` = {id}"
     conn.execute(dezactiveGroup)
     conn.commit()
     conn.close()
@@ -165,12 +166,15 @@ def show_list():
         for l in lists:
             if l["id"] > 0:
                 nazwa = l["name"]
+                id = l["id"]
+                elements = select_elements(nazwa, id)
                 break
             else: 
-                nazwa = "none"
+                elements = []
     elif request.method == "POST":
         nazwa = request.form["name"]
-    elements = select_elements(nazwa)
+        id = request.form["id"]
+        elements = select_elements(nazwa, id)
     return render_template("list.html", lists = lists, el = elements, count = len(elements), nazwa = nazwa)
 
 @app.route("/add_element", methods = ['POST', 'GET'])
@@ -181,10 +185,14 @@ def add_elements():
             if l["id"] > 0:
                 nazwa = l["name"]
                 id = l["id"]
+                groups = select_group(id)
+                ugroups = select_ugroup(nazwa)
                 break
             else: 
                 nazwa = "none"
                 id = 0
+                groups = []
+                ugroups = []
     elif request.method == "POST":
         nazwa = request.form["name"]
         for l in lists:
@@ -193,9 +201,9 @@ def add_elements():
                 break
             else: 
                 id = 0
-        
-    groups = select_group(id)
-    ugroups = select_ugroup(nazwa)
+        groups = select_group(id)
+        ugroups = select_ugroup(nazwa)
+    
     return render_template("add_element.html", lists = lists, groups = groups, ugroups = ugroups, nazwa = nazwa, id = id)
 
 @app.route("/new_element", methods = ['POST'])
@@ -241,8 +249,9 @@ def delete_element():
 @app.route("/reload_element", methods = ['POST'])
 def reload_element():
     if request.method == "POST":
+        lista = request.form['list']
         id = request.form['eid']
-        reactive_element(id)
+        reactive_element(id, lista)
         return redirect("/", code=302)
     
 @app.route("/edit_group", methods = ['POST'])
